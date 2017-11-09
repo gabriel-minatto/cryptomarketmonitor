@@ -31,4 +31,8 @@ module.exports = function(app){
         });
         
     });
+    
+    app.get("/teste", async (req, res) => {
+        const teste = await app.infra.apiUsersDAO.query();
+    });
 }
