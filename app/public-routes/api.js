@@ -1,4 +1,5 @@
 const get = require('simple-get');
+const md5 = require("md5");
 
 module.exports = function(app){
 
@@ -32,7 +33,26 @@ module.exports = function(app){
         
     });
     
-    app.get("/teste", async (req, res) => {
-        const teste = await app.infra.apiUsersDAO.query();
+    app.post("/saveUser", async (req, res) => {
+      
+        const email = req.body.email;
+        const token = md5(`${req.headers+new Date()}`);
+        
+        app.infra.mongoConnectionFactory(async (err, conn) => {
+          if(err) throw err
+          
+          const user = {
+            email:email,
+            token:token
+          }
+          
+          const apiUsersDAO = new app.infra.apiUsersDAO(conn)
+          const result = await apiUsersDAO.insert(user)
+          
+          res.json({user:user, msg:result.result});
+          
+        });
+        
     });
 }
+
