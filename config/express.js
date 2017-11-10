@@ -23,13 +23,13 @@ module.exports = function(){
         next();
     });
     
-    app.use((req, res, next) => {
+    /*app.use((req, res, next) => {
         const apiKey = req.headers['x-api-key']
         if(apiKey != process.env.apiKey)
             res.status(403).render("erros/403")
 
         next();
-    });
+    });*/
     
     load('public-routes',{cwd:'app'})
         .then('infra')

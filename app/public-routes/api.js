@@ -54,5 +54,9 @@ module.exports = function(app){
         });
         
     });
+    
+    app.post('/teste', (req, res) => {
+        console.log(req.body);
+    });
 }
 
