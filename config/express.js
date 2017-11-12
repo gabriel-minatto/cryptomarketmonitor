@@ -26,28 +26,12 @@ module.exports = function(){
     app.use((req, res, next) => {
         const apiKey = req.get('x-api-key')
         if(apiKey != process.env.apiKey){
-            res.status(401).render("erros/403")
+            res.status(401).render("erros/401",{name:"x-api-key"})
             return
         }
 
         next();
     });
-
-    /*app.use((req, res, next) => {
-        const token = req.get('x-api-token')
-        
-        app.infra.mongoConnectionFactory(async (err, conn) => {
-            
-            const apiUsersDAO = new app.infra.apiUsersDAO(conn)
-            let user = await apiUsersDAO.query({token:token})
-            
-            if(!user || !Array.isArray(user) || user.length == 0){
-                res.status(401).render("erros/403")
-                return
-            }
-            next();
-        })
-    });*/
     
     load('routes',{cwd:'app'})
     .then('infra')

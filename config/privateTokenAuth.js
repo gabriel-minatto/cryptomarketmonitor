@@ -11,7 +11,7 @@ const privateTokenAuth = (req, res, next) => {
           let user = await apiUsersDAO.query({token:token})
           
           if(!user || !Array.isArray(user) || user.length == 0){
-              res.status(401).render("erros/403")
+              res.status(401).render("erros/401",{name:"x-api-token"})
               return
           }
           next()
