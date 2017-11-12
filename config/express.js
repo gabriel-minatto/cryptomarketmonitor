@@ -23,23 +23,35 @@ module.exports = function(){
         next();
     });
     
-    /*app.use((req, res, next) => {
-        const apiKey = req.headers['x-api-key']
-        if(apiKey != process.env.apiKey)
-            res.status(403).render("erros/403")
+    app.use((req, res, next) => {
+        const apiKey = req.get('x-api-key')
+        if(apiKey != process.env.apiKey){
+            res.status(401).render("erros/403")
+            return
+        }
 
         next();
+    });
+
+    /*app.use((req, res, next) => {
+        const token = req.get('x-api-token')
+        
+        app.infra.mongoConnectionFactory(async (err, conn) => {
+            
+            const apiUsersDAO = new app.infra.apiUsersDAO(conn)
+            let user = await apiUsersDAO.query({token:token})
+            
+            if(!user || !Array.isArray(user) || user.length == 0){
+                res.status(401).render("erros/403")
+                return
+            }
+            next();
+        })
     });*/
     
-    load('public-routes',{cwd:'app'})
-        .then('infra')
-        .into(app);
-    
-    //private middleware
-
-    load('private-routes',{cwd:'app'})
-        .into(app);
-
+    load('routes',{cwd:'app'})
+    .then('infra')
+    .into(app);
     
     app.use(function(req,res,next){
         res.status(404).render("erros/404");
@@ -49,7 +61,6 @@ module.exports = function(){
     app.use(function(err,req,res,next){
         res.status(500).render("erros/500");
         return;
-        next(err);
     });
 
     return app;

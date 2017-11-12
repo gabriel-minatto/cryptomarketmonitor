@@ -1,5 +1,4 @@
 const mongodb = require('mongodb');
-const ObjectID = mongodb.ObjectID;
 /**
  * will reuse connection if already created
  */ 

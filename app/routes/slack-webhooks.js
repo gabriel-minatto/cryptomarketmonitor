@@ -1,51 +1,42 @@
 const md5 = require("md5")
 const request = require("request")
 const get = require('simple-get')
+const privateTokenAuth = require('../../config/privateTokenAuth')()
 
 module.exports = function(app){
     
-    app.post("/new-slack-webhook", async (req, res) => {
+    app.post("/new-slack-webhook", privateTokenAuth, async (req, res) => {
       
         const newPush = req.body.notification
         const token = req.get('x-api-token')
         
         app.infra.mongoConnectionFactory(async (err, conn) => {
           if(err) throw err
-          
-          try{
-          
-            const incomingUser = {
-              token: token
-            }
-            
-            const apiUsersDAO = new app.infra.apiUsersDAO(conn)
-            let dbUser = await apiUsersDAO.query(incomingUser)
-            
-            if(!dbUser || !dbUser[0]){
-              res.json({msg:"",err:"Usuario nao encontrado ou token invalido"})
-              return
-            }
-  
-            const user = dbUser[0]
-  
-            if(!user.webhooks || !Array.isArray(user.webhooks))
-              user.webhooks = [newPush]
-            else
-              user.webhooks.push(newPush)
-  
-            const result = await apiUsersDAO.updateByid(user._id, {webhooks:user.webhooks})
-            
-            res.json({user:user, msg:result.result})
 
-          }catch(erro){
-            console.log(erro)
+          const apiUsersDAO = new app.infra.apiUsersDAO(conn)
+          let dbUser = await apiUsersDAO.query({token:token})
+          
+          if(!dbUser || !dbUser[0]){
+            res.json({msg:"",err:"Usuario nao encontrado ou token invalido"})
+            return
           }
+
+          const user = dbUser[0]
+
+          if(!user.webhooks || !Array.isArray(user.webhooks))
+            user.webhooks = [newPush]
+          else
+            user.webhooks.push(newPush)
+
+          const result = await apiUsersDAO.updateByid(user._id, {webhooks:user.webhooks})
+          
+          res.json({user:user, msg:result.result})
 
         })
         
     })
     
-    app.post("/send-slack-notification/:coin", async (req, res) => {
+    app.post("/send-slack-notification/:coin", privateTokenAuth, async (req, res) => {
 
         const variation = req.body.variation
         const coin = req.params.coin
@@ -103,7 +94,7 @@ module.exports = function(app){
         })
     })
     
-    app.get("/get-slack-webhooks", async (req, res) => {
+    app.get("/get-slack-webhooks", privateTokenAuth, async (req, res) => {
         
         const token = req.get('x-api-token')
         
@@ -129,7 +120,7 @@ module.exports = function(app){
         })
     })
     
-    app.delete("/delete-slack-webhook", async (req, res) => {
+    app.delete("/delete-slack-webhook", privateTokenAuth, async (req, res) => {
       
         const token = req.get('x-api-token')
         const notification = req.body.notification

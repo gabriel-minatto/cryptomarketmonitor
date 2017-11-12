@@ -7,8 +7,7 @@ module.exports = function(app){
         get.concat('https://www.mercadobitcoin.net/api/BTC/ticker/', function (err, getRes, data){
           if (err) throw err
           if(getRes.statusCode == 200)
-            res.set('Content-Type', 'application/json');
-            res.send(data.toString());
+            res.json(data.toString());
         });
         
     });
@@ -17,8 +16,7 @@ module.exports = function(app){
         get.concat('https://www.mercadobitcoin.net/api/LTC/ticker/', function (err, getRes, data){
           if (err) throw err
           if(getRes.statusCode == 200)
-            res.set('Content-Type', 'application/json');
-            res.send(data.toString());
+            res.json(data.toString());
         });
         
     });
@@ -27,8 +25,7 @@ module.exports = function(app){
         get.concat('https://www.mercadobitcoin.net/api/BCH/ticker/', function (err, getRes, data){
           if (err) throw err
           if(getRes.statusCode == 200)
-            res.set('Content-Type', 'application/json');
-            res.send(data.toString());
+            res.json(data.toString());
         });
         
     });
