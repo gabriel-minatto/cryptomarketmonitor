@@ -3,30 +3,26 @@ const md5 = require("md5");
 
 module.exports = function(app){
 
-    app.get('/btc', function(req, res){
-        get.concat('https://www.mercadobitcoin.net/api/BTC/ticker/', function (err, getRes, data){
-          if (err) throw err
-          if(getRes.statusCode == 200)
-            res.json(data.toString());
-        });
+    app.get('/moeda/:coin', function(req, res){
+      const coin = req.params.coin
+      
+      req.assert("coin","Codigo de moeda invalido").isIn(['btc','ltc','bch'])
         
-    });
-    
-    app.get('/ltc', function(req, res){
-        get.concat('https://www.mercadobitcoin.net/api/LTC/ticker/', function (err, getRes, data){
-          if (err) throw err
-          if(getRes.statusCode == 200)
-            res.json(data.toString());
-        });
+      var erros = req.validationErrors()
+      if(erros){
+        res.json({msg:"",err:JSON.stringify(erros)})
+        return
+      }
         
-    });
-    
-    app.get('/bch', function(req, res){
-        get.concat('https://www.mercadobitcoin.net/api/BCH/ticker/', function (err, getRes, data){
-          if (err) throw err
-          if(getRes.statusCode == 200)
-            res.json(data.toString());
-        });
+      get.concat(`https://www.mercadobitcoin.net/api/${coin}/ticker/`, function (err, getRes, data){
+        if (err) throw err
+        if(getRes.statusCode != 200){
+          res.json({msg:"",err:"Erro no provedor de valores"})
+          return
+        }
+        
+        res.json(data.toString())
+      });
         
     });
     
@@ -34,6 +30,14 @@ module.exports = function(app){
       
         const email = req.body.email;
         const token = md5(`${req.headers+new Date()}`);
+        
+        req.assert("email","O campo email e obrigatorio").notEmpty()
+        
+        var erros = req.validationErrors()
+        if(erros){
+          res.json({msg:"",err:JSON.stringify(erros)})
+          return
+        }
         
         app.infra.mongoConnectionFactory(async (err, conn) => {
           if(err) throw err

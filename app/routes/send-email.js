@@ -12,6 +12,15 @@ module.exports = function(app){
         const coin = req.params.coin
         const token = req.get('x-api-token')
         
+        req.assert("variation","O campo variation e obrigatorio").notEmpty()
+        req.assert("coin","Codigo de moeda invalido").isIn(['btc','ltc','bch'])
+        
+        var erros = req.validationErrors()
+        if(erros){
+          res.json({msg:"",err:JSON.stringify(erros)})
+          return
+        }
+        
         app.infra.mongoConnectionFactory(async (err, conn) => {
           if(err) throw err
           
@@ -45,7 +54,7 @@ module.exports = function(app){
             
             // setup e-mail data with unicode symbols
             var mailOptions = {
-              from: "CryptoMarketMonitor <gabdevilshunter@gmail.com>", // sender address
+              from: `CryptoMarketMonitor <${process.env.smtpTransport}>`, // sender address
               to: user.email, // list of receivers
               subject: "Variação no preço de crypto moedas", // Subject line
               text: `A moeda ${coin} sofreu uma variação de ${variation}% e agora tem o valor de ${newValues}R$` // plaintext body
@@ -90,6 +99,14 @@ module.exports = function(app){
         
         const token = req.get('x-api-token')
         const newEmail = req.body.email
+        
+        req.assert("email","O campo email e obrigatorio").notEmpty()
+        
+        var erros = req.validationErrors()
+        if(erros){
+          res.json({msg:"",err:JSON.stringify(erros)})
+          return
+        }
         
         app.infra.mongoConnectionFactory(async (err, conn) => {
           if(err) throw err

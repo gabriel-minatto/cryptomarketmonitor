@@ -10,6 +10,14 @@ module.exports = function(app){
         const newPush = req.body.notification
         const token = req.get('x-api-token')
         
+        req.assert("notification","O campo notification e obrigatorio").notEmpty()
+        
+        var erros = req.validationErrors()
+        if(erros){
+          res.json({msg:"",err:JSON.stringify(erros)})
+          return
+        }
+        
         app.infra.mongoConnectionFactory(async (err, conn) => {
           if(err) throw err
 
@@ -41,6 +49,15 @@ module.exports = function(app){
         const variation = req.body.variation
         const coin = req.params.coin
         const token = req.get('x-api-token')
+        
+        req.assert("variation","O campo variation e obrigatorio").notEmpty()
+        req.assert("coin","Codigo de moeda invalido").isIn(['btc','ltc','bch'])
+        
+        var erros = req.validationErrors()
+        if(erros){
+          res.json({msg:"",err:JSON.stringify(erros)})
+          return
+        }
         
         app.infra.mongoConnectionFactory(async (err, conn) => {
           if(err) throw err
@@ -124,6 +141,14 @@ module.exports = function(app){
       
         const token = req.get('x-api-token')
         const notification = req.body.notification
+        
+        req.assert("notification","O campo notification e obrigatorio").notEmpty()
+        
+        var erros = req.validationErrors()
+        if(erros){
+          res.json({msg:"",err:JSON.stringify(erros)})
+          return
+        }
         
         app.infra.mongoConnectionFactory(async (err, conn) => {
           if(err) throw err

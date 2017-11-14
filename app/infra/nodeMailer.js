@@ -9,6 +9,14 @@ var nodemailer = require("nodemailer");
     html: "<b>Hello world ✔</b>" // html body
 }*/
 
+/*
+Para o envio com a conta do Gmail,
+talvez seja preciso seguir os links abaixo
+*/
+
+//https://myaccount.google.com/lesssecureapps
+//https://accounts.google.com/DisplayUnlockCaptcha
+
 var sendMail = async (mailOptions, callback) => {
 
     const smtpTransport = nodemailer.createTransport({
