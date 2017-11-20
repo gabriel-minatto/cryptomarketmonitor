@@ -5,7 +5,15 @@ const nodemailer =require("nodemailer")
 const privateTokenAuth = require('../../config/privateTokenAuth')()
 
 module.exports = function(app){
-    
+  
+    /**
+    * @api {post} /send-email/codigo_da_moeda Enviar email
+    * @apiGroup Private/Email
+    * @apiDescription Envia uma notificação ao email do usuário
+    * o(os) parametro(os) {variation}
+    *
+    *
+    **/
     app.post("/send-email/:coin", privateTokenAuth, async (req, res) => {
 
         const variation = req.body.variation
@@ -69,6 +77,13 @@ module.exports = function(app){
         })
     })
     
+    /**
+    * @api {get} /get-email Ver email
+    * @apiGroup Private/Email
+    * @apiDescription Retorna o email do usuário
+    *
+    *
+    **/
     app.get("/get-email", privateTokenAuth, async (req, res) => {
         
         const token = req.get('x-api-token')
@@ -95,6 +110,14 @@ module.exports = function(app){
         })
     })
     
+    /**
+    * @api {put} /change-email Alterar email
+    * @apiGroup Private/Email
+    * @apiDescription Altera o endereço de email do usuário
+    * o(os) parametro(os) {email}
+    *
+    *
+    **/
     app.put("/change-email", privateTokenAuth, async (req, res) => {
         
         const token = req.get('x-api-token')

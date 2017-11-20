@@ -4,7 +4,15 @@ const get = require('simple-get')
 const privateTokenAuth = require('../../config/privateTokenAuth')()
 
 module.exports = function(app){
-    
+  
+    /**
+    * @api {post} /new-slack-webhook Novo Canal Slack
+    * @apiGroup Private/Slack
+    * @apiDescription Adiciona um novo canal (slack incoming webhook) para envio de notificações recebendo
+    * o(os) parametro(os) {notification}
+    *
+    *
+    **/
     app.post("/new-slack-webhook", privateTokenAuth, async (req, res) => {
       
         const newPush = req.body.notification
@@ -44,6 +52,14 @@ module.exports = function(app){
         
     })
     
+    /**
+    * @api {post} /send-slack-notification/codigo_da_moeda Enviar Notificação
+    * @apiGroup Private/Slack
+    * @apiDescription Dispara notificações sobre alterações nas moedas para os canais cadastrados do usuários recebendo
+    * o(os) parametro(os) {variation}
+    *
+    *
+    **/
     app.post("/send-slack-notification/:coin", privateTokenAuth, async (req, res) => {
 
         const variation = req.body.variation
@@ -111,6 +127,13 @@ module.exports = function(app){
         })
     })
     
+    /**
+    * @api {get} /get-slack-webhooks Listar Canais
+    * @apiGroup Private/Slack
+    * @apiDescription Retorna uma lista com os canais slack cadastrados do usuário
+    *
+    *
+    **/
     app.get("/get-slack-webhooks", privateTokenAuth, async (req, res) => {
         
         const token = req.get('x-api-token')
@@ -132,11 +155,19 @@ module.exports = function(app){
           
           user = user[0]
           
-          res.json(user.webhooks)
+          res.json({webhooks:user.webhooks})
           return
         })
     })
     
+    /**
+    * @api {delete} /delete-slack-webhook Deletar Canal
+    * @apiGroup Private/Slack
+    * @apiDescription Deleta quaisquer canais cadastrados que sejam iguais
+    * ao parametro {notification}
+    *
+    *
+    **/
     app.delete("/delete-slack-webhook", privateTokenAuth, async (req, res) => {
       
         const token = req.get('x-api-token')
