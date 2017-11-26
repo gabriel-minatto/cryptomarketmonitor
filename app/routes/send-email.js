@@ -123,7 +123,7 @@ module.exports = function(app){
         const token = req.get('x-api-token')
         const newEmail = req.body.email
         
-        req.assert("email","O campo email e obrigatorio").notEmpty()
+        req.assert("email","O campo email e obrigatorio").notEmpty().isEmail()
         
         var erros = req.validationErrors()
         if(erros){

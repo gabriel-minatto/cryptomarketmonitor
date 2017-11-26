@@ -14,7 +14,7 @@ module.exports = function(app){
     *
     **/
     app.post("/new-slack-webhook", privateTokenAuth, async (req, res) => {
-      
+
         const newPush = req.body.notification
         const token = req.get('x-api-token')
         
@@ -60,7 +60,7 @@ module.exports = function(app){
     *
     *
     **/
-    app.post("/send-slack-notification/:coin", privateTokenAuth, async (req, res) => {
+    app.post("/send-slack-notification/:coin", privateTokenAuth, (req, res) => {
 
         const variation = req.body.variation
         const coin = req.params.coin
@@ -74,6 +74,8 @@ module.exports = function(app){
           res.json({msg:"",err:JSON.stringify(erros)})
           return
         }
+        
+        console.log(undefined.abc)
         
         app.infra.mongoConnectionFactory(async (err, conn) => {
           if(err) throw err
@@ -107,17 +109,8 @@ module.exports = function(app){
             const newValues = Number(JSON.parse(data).ticker.last).toFixed(2)
             
             user.webhooks.forEach((value, key) => {
-            
-              request.post(value, (error, response, body) => {
-                  if (error) throw error
-                  if (response.statusCode != 200) {
-                    res.json({msg:"",err:"Erro no envio dos webhooks"})
-                    return
-                  }
-              })
-              .form({
-                "text":`A moeda ${coin} sofreu uma variação de ${variation}% e agora tem o valor de ${newValues}R$`
-              })
+              
+              app.infra.slackPusher(value, {"text":`A moeda ${coin} sofreu uma variação de ${variation}% e agora tem o valor de ${newValues}R$`})
 
             })
 

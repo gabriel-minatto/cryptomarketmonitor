@@ -31,7 +31,7 @@ module.exports = function(app){
     app.get('/moeda/:coin', function(req, res){
       
       const coin = req.params.coin
-      
+
       req.assert("coin","Codigo de moeda invalido").isIn(['btc','ltc','bch'])
         
       var erros = req.validationErrors()
@@ -62,10 +62,11 @@ module.exports = function(app){
     **/
     app.post("/saveUser", async (req, res) => {
       
+        
         const email = req.body.email;
         const token = md5(`${req.headers+new Date()}`);
         
-        req.assert("email","O campo email e obrigatorio").notEmpty()
+        req.assert("email","O campo email e obrigatorio").notEmpty().isEmail()
         
         var erros = req.validationErrors()
         if(erros){
