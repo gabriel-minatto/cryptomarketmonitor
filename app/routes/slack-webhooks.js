@@ -75,8 +75,6 @@ module.exports = function(app){
           return
         }
         
-        console.log(undefined.abc)
-        
         app.infra.mongoConnectionFactory(async (err, conn) => {
           if(err) throw err
           
