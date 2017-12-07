@@ -1,17 +1,21 @@
-var MongoClient = require('mongodb').MongoClient;
-/*var databaseName = "aulalivre_chat",
-    server = "127.0.0.1",
-    port = 27017;*/
+console.log("Iniciando script")
 
-module.exports = function(dbName, server, port){
+const MongoClient = require('mongodb').MongoClient
+require('dotenv').config()
 
-  //var url = `mongodb://${server}:${port}/${dbName}`;
-  var url = `mongodb://localhost:27017/crypto_api`;
+const createDB = (dbName, server, port) => {
+
+  const url = `mongodb://${server}:${port}/${dbName}`
 
   MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
-    console.log("Database created!");
-    db.close();
-  });
+    if (err) throw err
+    console.log("Database created!")
+    db.close()
+  })
 }
 
+const [dbName, dbServer, dbPort] = [process.env.dbName, process.env.dbServer, process.env.dbPort]
+
+createDB(dbName, dbServer, dbPort)
+
+console.log("Finalizando script")
