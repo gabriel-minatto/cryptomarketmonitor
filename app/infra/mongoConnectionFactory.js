@@ -4,9 +4,10 @@ const mongodb = require('mongodb');
  */ 
 var createDBConnection = async function(callback, config){
   
-  config = config || {dbName : process.env.dbName, server : process.env.dbServer, port : process.env.dbPort};
+  config = config || 
+    {dbUser: process.env.dbUser, dbPassword: process.env.dbPassword, dbName : process.env.dbName, server : process.env.dbServer, port : process.env.dbPort};
   
-  var url = `mongodb://${config.server}:${config.port}/${config.dbName}`;
+  const url = `mongodb://${config.dbUser}:${config.dbPassword}@${config.server}:${config.port}/${config.dbName}`;
   
   const db = await mongodb.MongoClient.connect(url);
   
