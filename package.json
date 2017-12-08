@@ -22,5 +22,8 @@
     "serialize-error": "^2.1.0",
     "simple-get": "^2.7.0",
     "socket.io": "~0.9.14"
+  },
+  "engines": {
+    "node": "8.6.0"
   }
 }
